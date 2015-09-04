@@ -1,0 +1,46 @@
+** Useful Links
+*** Titan/Rexster docker setup
+    https://github.com/apobbati/titan-rexster
+*** OrientDB/Rexter docker setup
+    https://github.com/VAGAScom/rexster-orientdb-docker
+*** Gremlin Documentation
+    http://gremlindocs.spmallette.documentup.com/
+*** Bulbs (Python interface to rexster)
+    http://bulbflow.com/docs/
+** Systems
+*** Giraph
+    Giraph **does** seem to have some support for Rexster, though setup looks non-trivial:
+    http://giraph.apache.org/rexster.html
+*** Titan
+**** Can run hadoop batch jobs as well as standalone mode
+**** Backed by Cassandra/HBase databases
+**** Excellent documentation: http://s3.thinkaurelius.com/docs/titan/0.9.0-M2/
+*** Neo4j
+**** https://github.com/kbastani/neo4j-mazerunner
+*** OrientDB
+**** Doesn't seem to support map/reduce jobs - scaling is somewhat restricted
+     It supports replication and sharding, but not much else for running batch jobs.
+** Blueprints (Tinkerpop Stack)
+   A suite of generic APIs for graph database components:
+    + Traversal Language (Gremlin)
+    + Graph Server (Rexster) (HTTP API)
+    + Other interfaces, see full list here: https://github.com/tinkerpop/blueprints/wiki
+
+    This seems to a very complete and well documented set of APIs, and using something which supports them should be worth our while.
+*** Gremlin Examples
+    These are just simple examples of using Gremlin from the REPL.
+**** Who Ronaldo Likes
+     #+BEGIN_SRC groovy
+       ronaldo.outE('likes').inV.map('fullname')
+     #+END_SRC
+**** Who is the most liked?
+     Takes about 1 minute on a graph with 200k nodes, 400k edges, and 0 indices on my personal machine running
+     Cassandra backed Titan.
+     #+BEGIN_SRC groovy
+       thing = g.E.has('label', 'likes').inV().groupCount.cap.toList()
+       thing[0].sort{-it.value}
+     #+END_SRC
+**** Who does nobody like? :(
+     #+BEGIN_SRC groovy
+       g.V.filter{!it.inE('likes').hasNext()}
+     #+END_SRC
