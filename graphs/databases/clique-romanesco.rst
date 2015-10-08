@@ -18,7 +18,7 @@ container for:
 -  ElasticSearch
 
 To setup the entire stack, the following assumes Docker is installed,
-and LINK properties.template is in the same directory.
+and the file etc/titan-rexster.props.tpl exists.
 
 .. code:: bash
 
@@ -32,7 +32,7 @@ and LINK properties.template is in the same directory.
 
       CASSANDRA_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' cs)
 
-      sed "s/{{CASSANDRA_HOSTNAME}}/${CASSANDRA_IP}/" titan-rexster.props.tpl > titan-rexster.props
+      sed "s/{{CASSANDRA_HOSTNAME}}/${CASSANDRA_IP}/" etc/titan-rexster.props.tpl > titan-rexster.props
 
       echo "elasticsearch: " $(docker inspect --format '{{ .NetworkSettings.IPAddress }}' es)
       echo "cassandra:     " $(docker inspect --format '{{ .NetworkSettings.IPAddress }}' cs)
