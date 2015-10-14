@@ -76,6 +76,7 @@ This is a very small graph that will suffice for demonstration purposes.
 2. Build the Clique ANB application:
 
 .. code:: bash
+
     git clone https://github.com/XDATA-Year-3/clique-anb.git
     cd clique-anb
     git checkout f0fbb20fa89ace26763964e46653c591a928fa09
@@ -91,12 +92,14 @@ Before using the app, we need to do a bit of configuration.
 3. Edit the file ``anb.json`` to configure the application:
 
 .. code:: bash
+
     cd build/site
     vim anb.json
 
 The file should look like this:
 
 .. code:: javascript
+
     {
         "database": "mydb",
         "collection": "mycollection",
