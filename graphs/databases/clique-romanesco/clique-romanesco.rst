@@ -1,9 +1,3 @@
-Running NetworkX analyses in Clique
-===================================
-
-Since analyses within Clique are backed by Romanesco, Clique graphs can
-be sent to a Romanesco worker as a NetworkX graph.
-
 Running Titan analyses in Clique using Gremlin
 ==============================================
 
@@ -83,6 +77,7 @@ This is a very small graph that will suffice for demonstration purposes.
     git checkout 9d51f1da2b6d96eb9c6ff548311099dc139adc8e
     git reset --hard
 
+    pip install -r requirements.txt
     npm install
     gulp
     gulp serve
@@ -105,7 +100,7 @@ The file should look like this:
         "database": "mydb",
         "collection": "mycollection",
 
-        "titan": "http://<titan-rexster-IP-address-from-above>/graphs/graph"
+        "titan": "http://<titan-rexster-IP-address-from-above>:8182/graphs/graph"
     }
 
 4. Open the application by visiting http://localhost:3000?label=a&radius=1 in
