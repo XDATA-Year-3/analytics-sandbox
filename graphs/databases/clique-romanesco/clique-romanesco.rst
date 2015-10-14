@@ -69,6 +69,7 @@ application, follow these steps:
 1. Generate the example graph data:
 
 .. code:: bash
+
     python graph/make-graph.py | mongoimport -d mydb -c mycollection --drop
 
 This is a very small graph that will suffice for demonstration purposes.
