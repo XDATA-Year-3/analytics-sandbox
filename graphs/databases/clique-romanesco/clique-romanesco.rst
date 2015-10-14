@@ -80,7 +80,7 @@ This is a very small graph that will suffice for demonstration purposes.
 
     git clone https://github.com/XDATA-Year-3/clique-anb.git
     cd clique-anb
-    git checkout f0fbb20fa89ace26763964e46653c591a928fa09
+    git checkout 6732fb47fdab22122965638f5dd001659df8671a
     git reset --hard
 
     npm install
