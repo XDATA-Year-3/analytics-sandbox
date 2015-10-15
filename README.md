@@ -11,5 +11,6 @@ The code in this repository is **not** production-ready by any means. It is a co
  * [mbta-ingest](https://github.com/XDATA-Year-3/analytics-sandbox/tree/master/etl/mbta-ingest)
 * graphs
  * [databases](https://github.com/XDATA-Year-3/analytics-sandbox/blob/master/graphs/databases)
+ * [clique-romanesco](https://github.com/XDATA-Year-3/analytics-sandbox/blob/master/graphs/databases/clique-romanesco)
 * helpers
  * [pandas](https://github.com/XDATA-Year-3/analytics-sandbox/tree/master/helpers/pandas)
