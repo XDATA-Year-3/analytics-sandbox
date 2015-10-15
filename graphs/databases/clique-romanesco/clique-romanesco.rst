@@ -74,7 +74,7 @@ This is a very small graph that will suffice for demonstration purposes.
 
     git clone https://github.com/XDATA-Year-3/clique-anb.git
     cd clique-anb
-    git checkout 9d51f1da2b6d96eb9c6ff548311099dc139adc8e
+    git checkout a23e8ad3c9cdc24002e6564d9b88d6628e5c0c91
     git reset --hard
 
     pip install -r requirements.txt
