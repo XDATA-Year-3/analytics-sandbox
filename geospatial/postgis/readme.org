@@ -1,0 +1,54 @@
+The following are notes from an example setup of postgres/postgis
+
+* Setting up PostGIS (using Docker)
+  Run postgis using an existing container from dockerhub
+  #+BEGIN_SRC sh
+    docker run --name some-postgis -e POSTGRES_PASSWORD=mysecretpassword -d mdillon/postgis
+  #+END_SRC
+
+  Connect to the existing container through a client container:
+  #+BEGIN_SRC sh
+    docker run -it --link some-postgis:postgres --rm postgres \
+           sh -c 'exec psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p "$POSTGRES_PORT_5432_TCP_PORT" -U postgres'
+  #+END_SRC
+* Creating a table to store point data
+  We're using the SRID 4326.
+
+  #+BEGIN_SRC sql
+    CREATE TABLE ad_locations (
+           id serial,
+           ad_id integer unique,
+           location geometry(POINT, 4326)
+    );
+  #+END_SRC
+
+  For example, storing Albany as a point:
+  #+BEGIN_SRC sql
+    INSERT INTO ad_locations (ad_id, location) VALUES (12345, ST_SetSRID(ST_Point(73.7572, 42.6525), 4326));
+  #+END_SRC
+
+  And to retrieve it as longitude/latitude:
+  #+BEGIN_SRC sql
+    SELECT ST_AsText(location) FROM ad_locations;
+  #+END_SRC
+* Creating a table to store arbitrary geometric shapes 
+  #+BEGIN_SRC sql
+    CREATE TABLE msas (
+           id serial,
+           name varchar(255) unique,
+           region geometry(Geometry, 4326)
+    );
+
+    INSERT INTO msas (name, region) VALUES ('Some Polygon', ST_SetSRID(ST_AsText(ST_GeomFromGeoJSON(
+    '{"type": "Polygon",
+        "coordinates": [
+          [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],
+          [ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]
+          ]
+    }')), 4326));                  
+  #+END_SRC
+
+  Find all points from our first table which lie in a polygon from our second:
+  #+BEGIN_SRC sql
+    SELECT * FROM ad_locations WHERE ST_Contains((select region from msas limit 1), location);
+  #+END_SRC
