@@ -52,3 +52,9 @@ The following are notes from an example setup of postgres/postgis
   #+BEGIN_SRC sql
     SELECT * FROM ad_locations WHERE ST_Contains((select region from msas limit 1), location);
   #+END_SRC
+* Indexing Columns
+  This is detailed more [[http://revenant.ca/www/postgis/workshop/indexing.html][here]] but this is the idea:
+  #+BEGIN_SRC sql
+    CREATE INDEX ad_locations_gix ON ad_locations USING GIST (location);
+    CREATE INDEX msas_gix ON msas USING GIST (region);
+  #+END_SRC
