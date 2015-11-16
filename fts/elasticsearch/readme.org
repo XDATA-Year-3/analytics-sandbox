@@ -1,0 +1,54 @@
+I used 2 utilities for working with Elastic search from python:
+
+#+BEGIN_SRC literal
+  elasticsearch==2.1.0
+  elasticsearch-dsl==0.0.8
+#+END_SRC
+
+elasticsearch handles connections and querying, while elasticsearch-dsl handles writing queries in a succint manner.
+
+* Connecting to Elastic search
+  #+BEGIN_SRC python
+    from elasticsearch import Elasticsearch
+    es = Elasticsearch('https://user:password@some-es-url.com:12345')
+  #+END_SRC
+* Example Queries
+  Elasticsearch DSL just builds a large object that it converts to an Elasticsearch query compliant dict,
+  so we can start with a base object we'll use for all of the queries.
+  #+BEGIN_SRC python
+    search = Search() \
+        .using(client=es) \
+        .index('some-es-index-name')
+  #+END_SRC
+
+  Find everything
+  #+BEGIN_SRC python
+    from elasticsearch_dsl import Search
+    search_result = search.execute()
+  #+END_SRC
+
+  Find records with any field matching 'foo'
+  #+BEGIN_SRC python
+  search_result = search.query('match', _all='foo').execute()
+  #+END_SRC
+
+  Only select individual fields
+  #+BEGIN_SRC python
+    some_fields = ['id', 'name', 'address']
+
+    search_result = search.fields(some_fields).execute()
+  #+END_SRC
+
+  Only find documents with a name field
+
+  F acts as a filter function, bitwise complement negates it.
+  #+BEGIN_SRC python
+    from elasticsearch_dsl import F
+    search_result = search.filter(~F('missing', field='name')).execute()
+  #+END_SRC
+* Dealing with large results
+  One of the largest benefits of Elasticsearch DSL is it abstracts away the [[https://www.elastic.co/guide/en/elasticsearch/guide/current/scan-scroll.html][scan/scroll API]] to a simple generator.
+
+  For any of the above queries, replacing .execute with .scan will return a python generator which can be iterated over - dealing with pagination in the background.
+* Additional Examples
+** [[https://github.com/XDATA-Year-3/geoapp/blob/9088be80c7a1ec6642095a0e96637615211b4076/server/dataelasticsearch.py][Using elastic search in Minerva Taxi]]
