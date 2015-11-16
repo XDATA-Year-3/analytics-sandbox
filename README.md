@@ -9,6 +9,8 @@ The code in this repository is **not** production-ready by any means. It is a co
  * [dc-crime-ingest](https://github.com/XDATA-Year-3/analytics-sandbox/tree/master/etl/dc-crime-ingest)
  * [food-vendor-ingest](https://github.com/XDATA-Year-3/analytics-sandbox/tree/master/etl/food-vendor-ingest)
  * [mbta-ingest](https://github.com/XDATA-Year-3/analytics-sandbox/tree/master/etl/mbta-ingest)
+* fts
+ * [elasticsearch](https://github.com/XDATA-Year-3/analytics-sandbox/tree/master/fts/elasticsearch)
 * geospatial
  * [postgis](https://github.com/XDATA-Year-3/analytics-sandbox/blob/master/geospatial/postgis)
 * graphs
