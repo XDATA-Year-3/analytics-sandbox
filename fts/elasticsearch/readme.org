@@ -50,3 +50,5 @@ elasticsearch handles connections and querying, while elasticsearch-dsl handles 
   One of the largest benefits of Elasticsearch DSL is it abstracts away the [[https://www.elastic.co/guide/en/elasticsearch/guide/current/scan-scroll.html][scan/scroll API]] to a simple generator.
 
   For any of the above queries, replacing .execute with .scan will return a python generator which can be iterated over - dealing with pagination in the background.
+* Additional Examples
+** [[https://github.com/XDATA-Year-3/geoapp/blob/9088be80c7a1ec6642095a0e96637615211b4076/server/dataelasticsearch.py][Using elastic search in Minerva Taxi]]
