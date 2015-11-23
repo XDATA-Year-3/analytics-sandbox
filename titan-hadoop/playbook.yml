@@ -1,0 +1,94 @@
+---
+- hosts: all
+  vars:
+    hadoop_version: "2.2.0"
+    java_version: "7"
+  sudo: true
+  tasks:
+    - name: update apt
+      apt: update_cache=true
+
+    - name: install base packages
+      apt:
+        name={{ item }}
+        state=latest
+      with_items:
+        - openjdk-{{ java_version }}-jdk
+        - sshpass
+
+    - name: copy hadoop files
+      unarchive:
+        copy=no
+        owner=vagrant
+        group=vagrant
+        creates=/home/vagrant/hadoop-{{ hadoop_version }}
+        src=/vagrant/hadoop-{{ hadoop_version }}.tar.gz
+        dest=/home/vagrant
+
+    - name: add variables to bashrc
+      lineinfile:
+        dest=/home/vagrant/.bashrc
+        line="{{ item }}"
+      with_items:
+        - export JAVA_HOME=/usr/lib/jvm/java-{{ java_version }}-openjdk-amd64
+        - export HADOOP_PREFIX=~/hadoop-{{ hadoop_version }}
+        - export HADOOP_HOME=$HADOOP_PREFIX
+        - export HADOOP_COMMON_HOME=$HADOOP_PREFIX
+        - export HADOOP_CONF_DIR=$HADOOP_PREFIX/etc/hadoop
+        - export HADOOP_HDFS_HOME=$HADOOP_PREFIX
+        - export HADOOP_MAPRED_HOME=$HADOOP_PREFIX
+        - export HADOOP_YARN_HOME=$HADOOP_PREFIX
+
+    - name: add nodes to hosts file
+      lineinfile:
+        dest=/etc/hosts
+        line="{{ item }}"
+      with_items:
+        - 192.168.33.10 namenode
+        - 192.168.33.21 datanode-01
+        - 192.168.33.22 datanode-02
+
+    - name: copy hadoop specific configs
+      copy:
+        src=hadoop-configs/etc/hadoop/
+        dest=/home/vagrant/hadoop-{{ hadoop_version }}/etc/hadoop
+        owner=vagrant
+        group=vagrant
+
+    # - name: store specific hadoop configs for replacement
+    #   find:
+    #     paths=/home/vagrant/hadoop-{{ hadoop_version }}/etc/hadoop
+    #     file_type=file
+    #   register: custom_hadoop_configs
+
+    # - name: replace hadoop specific configs inline variables
+    #   replace:
+    #     dest={{ item[0] }}
+    #     regexp='\${{ item[1] }}'
+    #     replace={{ item[1] }}
+    #   with_nested:
+    #     - "{{ custom_hadoop_configs.stdout_lines }}"
+    #     - [ 'hadoop_version', 'java_version' ]
+
+    - name: replace hadoop specific configs with proper hadoop version info
+      command:
+        find  -type f -exec sed -i "s/\$hadoop_version/{{ hadoop_version }}/g" {} \+
+
+    - name: replace hadoop specific configs with proper java version info
+      command:
+        find /home/vagrant/hadoop-{{ hadoop_version }}/etc/hadoop -type f -exec sed -i "s/\$java_version/{{ java_version }}/g" {} \+
+
+    - name: create ssh keys
+      sudo: false
+      command:
+        ssh-keygen -b 2048 -t rsa -f /home/vagrant/.ssh/id_rsa -q -N ""
+        creates=/home/vagrant/.ssh/id_rsa
+
+    - name: copy keys to all machines
+      sudo: false
+      command:
+        sshpass -pvagrant ssh-copy-id -i /home/vagrant/.ssh/id_rsa.pub -o StrictHostKeyChecking=no {{ item }}
+      with_items:
+        - vagrant@namenode
+        - vagrant@datanode-01
+        - vagrant@datanode-02
